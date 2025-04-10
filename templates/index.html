@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mind Reader 🔮</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #f9f9f9;
+      padding-top: 80px;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: purple;
+    }
+    input {
+      font-size: 20px;
+      width: 60px;
+      text-align: center;
+    }
+    button {
+      font-size: 18px;
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mind Reader 🔮</h1>
+  <p>Guess a number between 1 and 10</p>
+  <input type="number" id="numberInput" min="1" max="10" />
+  <br>
+  <button onclick="playGame()">Read My Mind</button>
+  <div id="result"></div>
+
+  <audio id="winSound" src="/static/win.mp3"></audio>
+  <audio id="loseSound" src="/static/fail.mp3"></audio>
+
+  <script>
+    function playGame() {
+      const number = document.getElementById("numberInput").value;
+
+      fetch("/play", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ choice: number })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("result").innerText = data.message;
+        const sound = data.win ? document.getElementById("winSound") : document.getElementById("loseSound");
+        sound.play();
+      });
+    }
+  </script>
+</body>
+</html>
